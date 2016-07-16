@@ -2,6 +2,7 @@ package cz.schrek.skladnik.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ public class RegisterUser extends AppCompatActivity {
         setContentView(R.layout.activity_register_user);
         setTitle("Registrace");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        findViewById(R.id.register_user_progressBar).setVisibility(View.INVISIBLE);
 
         addHandlers();
 
@@ -47,17 +49,11 @@ public class RegisterUser extends AppCompatActivity {
         try {
             user = constructUserFromLayout();
         } catch (SecurityException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterUser.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        try {
-            sendQueryOnUserExist(user);
-        } catch (RuntimeException e) {
-            Toast.makeText(this, "Uzivatel jiz existuje!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+        sendQueryOnUserExist(user);
     }
 
     private void sendQueryOnUserExist(final UserAccount user) {
@@ -76,24 +72,29 @@ public class RegisterUser extends AppCompatActivity {
         });
     }
 
-    private void actionOnQueryResponse(BackendlessCollection<UserAccount> response, UserAccount user) {
-        if (response.getCurrentPage().isEmpty()) {
-            Backendless.Persistence.save(user, new AsyncCallback<UserAccount>() {
-                @Override
-                public void handleResponse(UserAccount response) {
-                    Toast.makeText(RegisterUser.this, "Uzivatel vytvoren!", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+    private void actionOnQueryResponse(BackendlessCollection<UserAccount> response, UserAccount user) throws RuntimeException {
+        findViewById(R.id.register_user_bt_register).setEnabled(false);
+        findViewById(R.id.register_user_progressBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.register_user_bt_register).setVisibility(View.GONE);
+        Backendless.Persistence.save(user, new AsyncCallback<UserAccount>() {
+            @Override
+            public void handleResponse(UserAccount response) {
+                Toast.makeText(RegisterUser.this, "Uzivatel vytvoren!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
 
-                @Override
-                public void handleFault(BackendlessFault fault) {
-                    Toast.makeText(RegisterUser.this, "Uzivatel nebyl vytvoren!\nerror:" + fault.getCode(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            throw new RuntimeException("UserAccount is exist");
-        }
+            @Override
+            public void handleFault(BackendlessFault fault) {
+//                    Toast.makeText(RegisterUser.this, "Uzivatel nebyl vytvoren!\nerror:" + fault.getCode(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterUser.this, "Uzivatel jiz existuje!", Toast.LENGTH_SHORT).show();
+                ((Button)findViewById(R.id.register_user_bt_register)).setEnabled(true);
+                findViewById(R.id.register_user_progressBar).setVisibility(View.GONE);
+                findViewById(R.id.register_user_bt_register).setVisibility(View.VISIBLE);
+                Log.wtf("INFO:",fault.getMessage());
+            }
+        });
     }
+
 
     private UserAccount constructUserFromLayout() throws SecurityException {
         String login = ((TextView) findViewById(R.id.register_user_et_login)).getText().toString();
@@ -106,7 +107,10 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void checkValues(String password, String checkPass, String login) throws SecurityException {
-        if(login.isEmpty()){
+        if(!login.matches("^[a-zA-Z0-9._-]{3,}$")){
+            throw new SecurityException("Jmeno nema spravny format!");
+        }
+        if (login.isEmpty()) {
             throw new SecurityException("Jmeno je prazdne!");
         }
         if (!password.equals(checkPass)) {

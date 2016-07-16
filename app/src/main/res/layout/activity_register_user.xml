@@ -94,8 +94,24 @@
                     android:id="@+id/register_user_bt_register"
                     android:layout_gravity="center_horizontal"
             />
+
+
         </TableRow>
-        
+
+        <RelativeLayout
+                android:id="@+id/register_user_progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+        >
+
+            <ProgressBar
+                    android:layout_width="300px"
+                    android:layout_height="300px"
+                    android:indeterminate="true"/>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 
