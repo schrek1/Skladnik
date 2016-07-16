@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context=".view.MainLogin">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+    >
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="130px"
+                    android:layout_height="wrap_content"
+                    android:text="Jméno"
+                    android:gravity="left"
+                    android:textSize="20sp"
+                    android:textColor="@color/blue"/>
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="login"
+                    android:ems="10"
+                    android:layout_marginLeft="15dp"
+                    android:id="@+id/main_login_et_login"/>
+        </TableRow>
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <TextView android:layout_height="wrap_content"
+                      android:layout_width="130px"
+                      android:text="Heslo"
+                      android:textSize="20sp"
+                      android:textColor="@color/blue"
+                      android:gravity="left"
+            />
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/main_login_et_password"
+                    android:hint="password"
+                    android:layout_marginLeft="15dp"
+            />
+        </TableRow>
+
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="16dp"
+        >
+            <Button
+                    android:layout_width="370px"
+                    android:layout_height="wrap_content"
+                    android:text="Přihlásit"
+                    android:background="@color/blue"
+                    android:textColor="#FFFFFFFF"
+                    android:id="@+id/main_login_bt_login"
+                    android:layout_gravity="center_horizontal"
+            />
+        </TableRow>
+
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+        >
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registrovat"
+                    android:background="@color/red"
+                    android:textColor="#FFFFFFFF"
+                    android:id="@+id/main_login_bt_register"
+                    android:layout_gravity="bottom"
+            />
+        </TableRow>
+
+    </LinearLayout>
+</RelativeLayout>
