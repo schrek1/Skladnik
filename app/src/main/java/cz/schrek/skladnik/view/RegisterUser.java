@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.backendless.Backendless;
@@ -18,16 +19,23 @@ import cz.schrek.skladnik.model.UserAccount;
 
 public class RegisterUser extends AppCompatActivity {
 
+    private View progressBar = findViewById(R.id.register_user_progressBar);
+    private Button registerBut = (Button) findViewById(R.id.register_user_bt_register);;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
-        setTitle("Registrace");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        findViewById(R.id.register_user_progressBar).setVisibility(View.INVISIBLE);
 
+        settingsOnCreate();
         addHandlers();
 
+    }
+
+    private void settingsOnCreate() {
+        setTitle(getResources().getString(R.string.title_registration));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void addHandlers() {
@@ -35,8 +43,7 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void addRegisterButClickHandler() {
-        Button bt = (Button) findViewById(R.id.register_user_bt_register);
-        bt.setOnClickListener(new View.OnClickListener() {
+        registerBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 performRegistration();
@@ -53,10 +60,10 @@ public class RegisterUser extends AppCompatActivity {
             return;
         }
 
-        sendQueryOnUserExist(user);
+        createUser(user);
     }
 
-    private void sendQueryOnUserExist(final UserAccount user) {
+    private void createUser(final UserAccount user) {
         BackendlessDataQuery query = new BackendlessDataQuery();
         query.setWhereClause("login = '" + user.getLogin() + "'");
         Backendless.Persistence.find(UserAccount.class, query, new AsyncCallback<BackendlessCollection<UserAccount>>() {
@@ -73,28 +80,34 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void actionOnQueryResponse(BackendlessCollection<UserAccount> response, UserAccount user) throws RuntimeException {
-        findViewById(R.id.register_user_bt_register).setEnabled(false);
-        findViewById(R.id.register_user_progressBar).setVisibility(View.VISIBLE);
-        findViewById(R.id.register_user_bt_register).setVisibility(View.GONE);
+        setWaiting(true);
         Backendless.Persistence.save(user, new AsyncCallback<UserAccount>() {
             @Override
             public void handleResponse(UserAccount response) {
-                Toast.makeText(RegisterUser.this, "Uzivatel vytvoren!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterUser.this, getResources().getString(R.string.user_created), Toast.LENGTH_SHORT).show();
                 finish();
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-//                    Toast.makeText(RegisterUser.this, "Uzivatel nebyl vytvoren!\nerror:" + fault.getCode(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(RegisterUser.this, "Uzivatel jiz existuje!", Toast.LENGTH_SHORT).show();
-                ((Button)findViewById(R.id.register_user_bt_register)).setEnabled(true);
-                findViewById(R.id.register_user_progressBar).setVisibility(View.GONE);
-                findViewById(R.id.register_user_bt_register).setVisibility(View.VISIBLE);
-                Log.wtf("INFO:",fault.getMessage());
+                Toast.makeText(RegisterUser.this, getResources().getString(R.string.user_exists), Toast.LENGTH_SHORT).show();
+                setWaiting(false);
+                Log.wtf("INFO:", fault.getMessage());
             }
         });
     }
 
+    private void setWaiting(boolean waiting) {
+        if (waiting) {
+            registerBut.setEnabled(false);
+            registerBut.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            registerBut.setEnabled(true);
+            registerBut.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 
     private UserAccount constructUserFromLayout() throws SecurityException {
         String login = ((TextView) findViewById(R.id.register_user_et_login)).getText().toString();
@@ -107,17 +120,17 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void checkValues(String password, String checkPass, String login) throws SecurityException {
-        if(!login.matches("^[a-zA-Z0-9._-]{3,}$")){
-            throw new SecurityException("Jmeno nema spravny format!");
+        if (!login.matches("^[a-zA-Z0-9._-]{3,}$")) {
+            throw new SecurityException(getResources().getString(R.string.login_bad_format));
         }
-        if (login.isEmpty()) {
-            throw new SecurityException("Jmeno je prazdne!");
+        if (password.length() < 4) {
+            throw new SecurityException(getResources().getString(R.string.password_is_short));
         }
         if (!password.equals(checkPass)) {
-            throw new SecurityException("Hesla se neshoduji!");
+            throw new SecurityException(getResources().getString(R.string.passwords_not_equal));
         }
         if (password.isEmpty() || checkPass.isEmpty()) {
-            throw new SecurityException("Heslo je prazdne!");
+            throw new SecurityException(getResources().getString(R.string.password_is_empty));
         }
     }
 

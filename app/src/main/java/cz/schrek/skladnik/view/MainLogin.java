@@ -60,6 +60,7 @@ public class MainLogin extends AppCompatActivity {
     }
 
     private void verifyLogin() {
+        //TODO dodelat prihlasovani do systemu
 
     }
 
