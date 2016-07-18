@@ -19,21 +19,27 @@ import cz.schrek.skladnik.model.UserAccount;
 
 public class RegisterUser extends AppCompatActivity {
 
-    private View progressBar = findViewById(R.id.register_user_progressBar);
-    private Button registerBut = (Button) findViewById(R.id.register_user_bt_register);;
+    private View progressBar;
+    private Button registerBut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
 
+        init();
         settingsOnCreate();
         addHandlers();
 
     }
 
+    private void init() {
+        progressBar = findViewById(R.id.register_user_progressBar);
+        registerBut = (Button) findViewById(R.id.register_user_bt_register);
+    }
+
     private void settingsOnCreate() {
-        setTitle(getResources().getString(R.string.title_registration));
+        setTitle(getString(R.string.title_registration));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar.setVisibility(View.INVISIBLE);
     }
@@ -84,15 +90,15 @@ public class RegisterUser extends AppCompatActivity {
         Backendless.Persistence.save(user, new AsyncCallback<UserAccount>() {
             @Override
             public void handleResponse(UserAccount response) {
-                Toast.makeText(RegisterUser.this, getResources().getString(R.string.user_created), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterUser.this, getString(R.string.user_created), Toast.LENGTH_SHORT).show();
                 finish();
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                Toast.makeText(RegisterUser.this, getResources().getString(R.string.user_exists), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterUser.this, getString(R.string.user_exists), Toast.LENGTH_SHORT).show();
                 setWaiting(false);
-                Log.wtf("INFO:", fault.getMessage());
+                Log.wtf("REGISTER_ERROR:", fault.getMessage());
             }
         });
     }
@@ -120,17 +126,18 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void checkValues(String password, String checkPass, String login) throws SecurityException {
+        if (login.isEmpty() || password.isEmpty() || checkPass.isEmpty()) {
+            throw new SecurityException(getString(R.string.fill_all_inputs));
+        }
+
         if (!login.matches("^[a-zA-Z0-9._-]{3,}$")) {
-            throw new SecurityException(getResources().getString(R.string.login_bad_format));
+            throw new SecurityException(getString(R.string.login_bad_format));
         }
         if (password.length() < 4) {
-            throw new SecurityException(getResources().getString(R.string.password_is_short));
+            throw new SecurityException(getString(R.string.password_is_short));
         }
         if (!password.equals(checkPass)) {
-            throw new SecurityException(getResources().getString(R.string.passwords_not_equal));
-        }
-        if (password.isEmpty() || checkPass.isEmpty()) {
-            throw new SecurityException(getResources().getString(R.string.password_is_empty));
+            throw new SecurityException(getString(R.string.passwords_not_equal));
         }
     }
 

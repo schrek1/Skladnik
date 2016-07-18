@@ -22,7 +22,7 @@
             <TextView
                     android:layout_width="280px"
                     android:layout_height="wrap_content"
-                    android:text="Jméno"
+                    android:text="@string/name"
                     android:gravity="left"
                     android:textSize="20sp"
                     android:textColor="@color/blue"/>
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content">
             <TextView android:layout_height="wrap_content"
                       android:layout_width="280px"
-                      android:text="Heslo"
+                      android:text="@string/password"
                       android:textSize="20sp"
                       android:textColor="@color/blue"
                       android:gravity="left"
@@ -52,7 +52,7 @@
                     android:inputType="textPassword"
                     android:ems="10"
                     android:id="@+id/register_user_et_password"
-                    android:hint="heslo"
+                    android:hint="password"
                     android:layout_marginLeft="15dp"
             />
         </TableRow>
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content">
             <TextView android:layout_height="wrap_content"
                       android:layout_width="280px"
-                      android:text="Kontrola hesla"
+                      android:text="@string/pass_check"
                       android:textSize="20sp"
                       android:textColor="@color/blue"
                       android:gravity="left"
@@ -73,7 +73,7 @@
                     android:inputType="textPassword"
                     android:ems="10"
                     android:id="@+id/register_user_et_checkPass"
-                    android:hint="kontrola hesla"
+                    android:hint="password"
                     android:layout_marginLeft="15dp"
             />
         </TableRow>
@@ -88,7 +88,7 @@
             <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Registrovat"
+                    android:text="@string/register"
                     android:background="@color/red"
                     android:textColor="#FFFFFFFF"
                     android:id="@+id/register_user_bt_register"

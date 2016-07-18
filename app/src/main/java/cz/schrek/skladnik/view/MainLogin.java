@@ -4,13 +4,19 @@ package cz.schrek.skladnik.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
 import cz.schrek.skladnik.Constants;
 import cz.schrek.skladnik.R;
+import cz.schrek.skladnik.model.UserAccount;
 
 
 public class MainLogin extends AppCompatActivity {
@@ -22,11 +28,14 @@ public class MainLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
-        setTitle("Prihlaseni");
 
-        Backendless.initApp(this, Constants.BACKENDLESS_APP_ID, Constants.BACKENDLESS_SECRET_KEY, Constants.BACKENDLESS_APP_VERSION);
-
+        settingsOnCreate();
         addHandlers();
+    }
+
+    private void settingsOnCreate() {
+        setTitle(getString(R.string.title_login));
+        Backendless.initApp(this, Constants.BACKENDLESS_APP_ID, Constants.BACKENDLESS_SECRET_KEY, Constants.BACKENDLESS_APP_VERSION);
     }
 
     private void addHandlers() {
@@ -53,20 +62,38 @@ public class MainLogin extends AppCompatActivity {
                 if (verifyInputs()) {
                     verifyLogin();
                 } else {
-                    showBadInputAlert();
+                    Toast.makeText(MainLogin.this, getString(R.string.fill_all_inputs), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     private void verifyLogin() {
-        //TODO dodelat prihlasovani do systemu
+        BackendlessDataQuery query = new BackendlessDataQuery();
+        query.setWhereClause("login = '" + login + "'");
+        Backendless.Persistence.find(UserAccount.class, query, new AsyncCallback<BackendlessCollection<UserAccount>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<UserAccount> response) {
+                if (response != null && !response.getCurrentPage().isEmpty()) {
+                    UserAccount user = response.getCurrentPage().get(0);
+                    if (user.getPassword().equals(password)) {
+                        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainLogin.this, getString(R.string.password_is_bad), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainLogin.this, getString(R.string.user_not_exists), Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.wtf("LOG_ERROR:", fault.getMessage());
+            }
+        });
     }
 
-    private void showBadInputAlert() {
-        Toast.makeText(this, "Vyplňte všechna pole", Toast.LENGTH_SHORT).show();
-    }
 
     private boolean verifyInputs() {
         boolean success = true;

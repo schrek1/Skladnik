@@ -22,7 +22,7 @@
             <TextView
                     android:layout_width="130px"
                     android:layout_height="wrap_content"
-                    android:text="Jméno"
+                    android:text="@string/name"
                     android:gravity="left"
                     android:textSize="20sp"
                     android:textColor="@color/blue"/>
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content">
             <TextView android:layout_height="wrap_content"
                       android:layout_width="130px"
-                      android:text="Heslo"
+                      android:text="@string/password"
                       android:textSize="20sp"
                       android:textColor="@color/blue"
                       android:gravity="left"
@@ -67,7 +67,7 @@
             <Button
                     android:layout_width="370px"
                     android:layout_height="wrap_content"
-                    android:text="Přihlásit"
+                    android:text="@string/login"
                     android:background="@color/blue"
                     android:textColor="#FFFFFFFF"
                     android:id="@+id/main_login_bt_login"
@@ -85,7 +85,7 @@
             <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Registrovat"
+                    android:text="@string/register"
                     android:background="@color/red"
                     android:textColor="#FFFFFFFF"
                     android:id="@+id/main_login_bt_register"

@@ -2,12 +2,25 @@
     <string name="app_name">Skladnik</string>
     <string name="title_activity_login">Přihlášení</string>
 
-    <!--REGISTER USER-->
+    <!--RegisterUser-->
     <string name="title_registration">Registrace</string>
     <string name="user_created">Uzivatel byl vytvoren!</string>
     <string name="user_exists">Uzivatel jiz existuje!</string>
     <string name="login_bad_format">Jmeno nema spravny format!</string>
     <string name="password_is_short">Heslo je kratke (min. 4 znaky)!</string>
     <string name="passwords_not_equal">Hesla se neshoduji!</string>
-    <string name="password_is_empty">Hesla se neshoduji!</string>
+    <string name="name">Jméno</string>
+    <string name="login">Přihlásit</string>
+    <string name="password">Heslo</string>
+    <string name="register">Registrovat</string>
+
+
+    <!--MainLogin-->
+    <string name="title_login">Prihlaseni</string>
+    <string name="fill_all_inputs">Vyplňte všechna pole</string>
+    <string name="user_not_exists">Uzivatel neexistuje</string>
+    <string name="password_is_bad">Nespravne heslo!</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="pass_check">Kontrola hesla</string>
+
 </resources>

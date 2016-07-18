@@ -10,5 +10,17 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        settingsOnCreate();
+    }
+
+    private void settingsOnCreate() {
+        setTitle(getString(R.string.title_dashboard));
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }
