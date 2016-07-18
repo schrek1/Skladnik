@@ -2,7 +2,9 @@ package cz.schrek.skladnik.view;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.backendless.BackendlessCollection;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
+import com.google.gson.Gson;
 import cz.schrek.skladnik.Constants;
 import cz.schrek.skladnik.R;
 import cz.schrek.skladnik.model.UserAccount;
@@ -22,6 +25,7 @@ import cz.schrek.skladnik.model.UserAccount;
 public class MainLogin extends AppCompatActivity {
 
     private String login, password;
+    private View progressBar;
 
 
     @Override
@@ -29,13 +33,30 @@ public class MainLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
 
+        init();
+        redirectIfLogged();
         settingsOnCreate();
         addHandlers();
+    }
+
+    private void init() {
+        progressBar = findViewById(R.id.main_login_progress_bar);
+    }
+
+    private void redirectIfLogged() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isLogged = preferences.getBoolean(Constants.IS_LOGGED, false);
+
+        if (isLogged) {
+            Intent intent = new Intent(MainLogin.this, Dashboard.class);
+        }
+
     }
 
     private void settingsOnCreate() {
         setTitle(getString(R.string.title_login));
         Backendless.initApp(this, Constants.BACKENDLESS_APP_ID, Constants.BACKENDLESS_SECRET_KEY, Constants.BACKENDLESS_APP_VERSION);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void addHandlers() {
@@ -69,6 +90,7 @@ public class MainLogin extends AppCompatActivity {
     }
 
     private void verifyLogin() {
+        progressBar.setVisibility(View.VISIBLE);
         BackendlessDataQuery query = new BackendlessDataQuery();
         query.setWhereClause("login = '" + login + "'");
         Backendless.Persistence.find(UserAccount.class, query, new AsyncCallback<BackendlessCollection<UserAccount>>() {
@@ -77,6 +99,7 @@ public class MainLogin extends AppCompatActivity {
                 if (response != null && !response.getCurrentPage().isEmpty()) {
                     UserAccount user = response.getCurrentPage().get(0);
                     if (user.getPassword().equals(password)) {
+                        saveLoginInformation(user);
                         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                         startActivity(intent);
                     } else {
@@ -85,13 +108,27 @@ public class MainLogin extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainLogin.this, getString(R.string.user_not_exists), Toast.LENGTH_SHORT).show();
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
+                progressBar.setVisibility(View.GONE);
                 Log.wtf("LOG_ERROR:", fault.getMessage());
             }
         });
+    }
+
+    private void saveLoginInformation(UserAccount user) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = preferences.edit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+
+        edit.putString(Constants.LOGGED_USER, json);
+        edit.putBoolean(Constants.IS_LOGGED, true);
+        edit.commit();
     }
 
 

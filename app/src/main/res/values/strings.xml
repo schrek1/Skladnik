@@ -22,5 +22,6 @@
     <string name="password_is_bad">Nespravne heslo!</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="pass_check">Kontrola hesla</string>
+    <string name="logout">Odhlasit</string>
 
 </resources>

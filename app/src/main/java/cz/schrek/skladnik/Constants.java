@@ -8,5 +8,9 @@ public interface Constants {
     public static final String BACKENDLESS_SECRET_KEY = "9244A8F3-485C-2580-FF66-853517F3DC00";
     public static final String BACKENDLESS_APP_VERSION = "v1";
 
+    public static final String IS_LOGGED = "isLogged";
+    public static final String LOGGED_USER = "loggedUser";
+
+
 
 }
