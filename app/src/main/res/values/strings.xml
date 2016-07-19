@@ -23,5 +23,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="pass_check">Kontrola hesla</string>
     <string name="logout">Odhlasit</string>
+    <string name="error_empty">vyplnte pole</string>
 
 </resources>

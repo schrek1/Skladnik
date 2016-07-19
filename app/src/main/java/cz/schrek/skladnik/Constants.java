@@ -10,6 +10,8 @@ public interface Constants {
 
     public static final String IS_LOGGED = "isLogged";
     public static final String LOGGED_USER = "loggedUser";
+    public static final String INPUT_USERNAME = "username";
+    public static final String INPUT_PASSWORD = "password";
 
 
 

@@ -2,25 +2,29 @@ package cz.schrek.skladnik.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import cz.schrek.skladnik.R;
+import cz.schrek.skladnik.controler.Utility;
 import cz.schrek.skladnik.model.UserAccount;
 
 public class RegisterUser extends AppCompatActivity {
 
     private View progressBar;
     private Button registerBut;
+    private EditText inputLogin;
+    private EditText inputPassword;
+    private EditText inputChckPass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,9 @@ public class RegisterUser extends AppCompatActivity {
     private void init() {
         progressBar = findViewById(R.id.register_user_progressBar);
         registerBut = (Button) findViewById(R.id.register_user_bt_register);
+        inputLogin = (EditText) findViewById(R.id.register_user_et_login);
+        inputPassword = (EditText) findViewById(R.id.register_user_et_password);
+        inputChckPass = (EditText) findViewById(R.id.register_user_et_checkPass);
     }
 
     private void settingsOnCreate() {
@@ -46,6 +53,80 @@ public class RegisterUser extends AppCompatActivity {
 
     private void addHandlers() {
         addRegisterButClickHandler();
+        addTextHandlersToInputs();
+    }
+
+    private void addTextHandlersToInputs() {
+        inputLogin.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().matches("^[a-zA-Z0-9._-]{3,}$")) {
+                    inputLogin.setError(getString(R.string.login_bad_format));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                BackendlessDataQuery query = new BackendlessDataQuery();
+                query.setWhereClause("login = '" + editable.toString() + "'");
+                Backendless.Persistence.find(UserAccount.class, query, new AsyncCallback<BackendlessCollection<UserAccount>>() {
+                    @Override
+                    public void handleResponse(BackendlessCollection<UserAccount> response) {
+                        if (!response.getCurrentPage().isEmpty()) {
+                            inputLogin.setError(getString(R.string.user_exists));
+                        }
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        throw new RuntimeException(fault.toString());
+                    }
+                });
+            }
+        });
+        inputPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() < 4) {
+                    inputPassword.setError(getString(R.string.password_is_short));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        inputChckPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() < 4) {
+                    inputChckPass.setError(getString(R.string.password_is_short));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!inputPassword.getText().toString().equals(inputChckPass.getText().toString())) {
+                    inputChckPass.setError(getString(R.string.passwords_not_equal));
+                }
+            }
+        });
     }
 
     private void addRegisterButClickHandler() {
@@ -70,12 +151,15 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void createUser(final UserAccount user) {
+        setWaiting(true);
         BackendlessDataQuery query = new BackendlessDataQuery();
         query.setWhereClause("login = '" + user.getLogin() + "'");
         Backendless.Persistence.find(UserAccount.class, query, new AsyncCallback<BackendlessCollection<UserAccount>>() {
             @Override
             public void handleResponse(BackendlessCollection<UserAccount> response) {
-                actionOnQueryResponse(response, user);
+                if (response.getCurrentPage().isEmpty()) {
+                    actionOnQueryResponse(response, user);
+                }
             }
 
             @Override
@@ -86,7 +170,6 @@ public class RegisterUser extends AppCompatActivity {
     }
 
     private void actionOnQueryResponse(BackendlessCollection<UserAccount> response, UserAccount user) throws RuntimeException {
-        setWaiting(true);
         Backendless.Persistence.save(user, new AsyncCallback<UserAccount>() {
             @Override
             public void handleResponse(UserAccount response) {
@@ -122,7 +205,9 @@ public class RegisterUser extends AppCompatActivity {
 
         checkValues(password, checkPass, login);
 
-        return new UserAccount(login, password);
+        String hash = Utility.getHash(password);
+
+        return new UserAccount(login, hash);
     }
 
     private void checkValues(String password, String checkPass, String login) throws SecurityException {

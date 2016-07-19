@@ -30,7 +30,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:hint="uzivatelske jmeno"
+                    android:hint="login"
                     android:ems="10"
                     android:layout_marginLeft="15dp"
                     android:id="@+id/register_user_et_login"/>

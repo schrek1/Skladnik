@@ -19,12 +19,16 @@ import com.backendless.persistence.BackendlessDataQuery;
 import com.google.gson.Gson;
 import cz.schrek.skladnik.Constants;
 import cz.schrek.skladnik.R;
+import cz.schrek.skladnik.controler.Utility;
 import cz.schrek.skladnik.model.UserAccount;
 
 
 public class MainLogin extends AppCompatActivity {
 
     private String login, password;
+    private EditText inputLogin;
+    private EditText inputPassword;
+    private Button butLogin;
     private View progressBar;
 
 
@@ -37,10 +41,14 @@ public class MainLogin extends AppCompatActivity {
         redirectIfLogged();
         settingsOnCreate();
         addHandlers();
+
     }
 
     private void init() {
         progressBar = findViewById(R.id.main_login_progress_bar);
+        inputLogin = (EditText) findViewById(R.id.main_login_et_login);
+        inputPassword = (EditText) findViewById(R.id.main_login_et_password);
+        butLogin = (Button) findViewById(R.id.main_login_bt_login);
     }
 
     private void redirectIfLogged() {
@@ -49,6 +57,9 @@ public class MainLogin extends AppCompatActivity {
 
         if (isLogged) {
             Intent intent = new Intent(MainLogin.this, Dashboard.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         }
 
     }
@@ -76,8 +87,7 @@ public class MainLogin extends AppCompatActivity {
     }
 
     private void addLoginButClickHandler() {
-        Button bt = (Button) findViewById(R.id.main_login_bt_login);
-        bt.setOnClickListener(new View.OnClickListener() {
+        butLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (verifyInputs()) {
@@ -90,7 +100,7 @@ public class MainLogin extends AppCompatActivity {
     }
 
     private void verifyLogin() {
-        progressBar.setVisibility(View.VISIBLE);
+        waiting(true);
         BackendlessDataQuery query = new BackendlessDataQuery();
         query.setWhereClause("login = '" + login + "'");
         Backendless.Persistence.find(UserAccount.class, query, new AsyncCallback<BackendlessCollection<UserAccount>>() {
@@ -98,25 +108,39 @@ public class MainLogin extends AppCompatActivity {
             public void handleResponse(BackendlessCollection<UserAccount> response) {
                 if (response != null && !response.getCurrentPage().isEmpty()) {
                     UserAccount user = response.getCurrentPage().get(0);
-                    if (user.getPassword().equals(password)) {
+                    if (!password.isEmpty() && user.getPassword().equals(Utility.getHash(password))) {
                         saveLoginInformation(user);
                         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                         startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(MainLogin.this, getString(R.string.password_is_bad), Toast.LENGTH_SHORT).show();
+                        inputPassword.setError(getString(R.string.password_is_bad));
+                        waiting(false);
                     }
                 } else {
                     Toast.makeText(MainLogin.this, getString(R.string.user_not_exists), Toast.LENGTH_SHORT).show();
+                    inputLogin.setError(getString(R.string.user_not_exists));
+                    waiting(false);
                 }
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                progressBar.setVisibility(View.GONE);
+                waiting(false);
                 Log.wtf("LOG_ERROR:", fault.getMessage());
             }
         });
+    }
+
+    private void waiting(boolean waiting) {
+        if (waiting) {
+            butLogin.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            butLogin.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void saveLoginInformation(UserAccount user) {
@@ -126,25 +150,27 @@ public class MainLogin extends AppCompatActivity {
         Gson gson = new Gson();
         String json = gson.toJson(user);
 
-        edit.putString(Constants.LOGGED_USER, json);
-        edit.putBoolean(Constants.IS_LOGGED, true);
-        edit.commit();
+        edit.putString(Constants.LOGGED_USER, json).commit();
+        edit.putBoolean(Constants.IS_LOGGED, true).commit();
     }
 
 
     private boolean verifyInputs() {
-        boolean success = true;
-        EditText etLogin = (EditText) findViewById(R.id.main_login_et_login);
-        EditText etPass = (EditText) findViewById(R.id.main_login_et_password);
+        boolean valid = true;
+        login = inputLogin.getText().toString();
+        password = inputPassword.getText().toString();
 
-        login = etLogin.getText().toString();
-        password = etPass.getText().toString();
-
-        if (login.matches("") || password.matches("")) {
-            return false;
+        if (login.matches("")) {
+            inputLogin.setError(getString(R.string.fill_all_inputs));
+            valid = false;
         }
-        return true;
-    }
 
+        if (password.matches("")) {
+            inputPassword.setError(getString(R.string.fill_all_inputs));
+            valid = false;
+        }
+
+        return valid;
+    }
 
 }
