@@ -10,8 +10,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.google.gson.Gson;
 import cz.schrek.skladnik.Constants;
 import cz.schrek.skladnik.R;
@@ -25,8 +25,63 @@ public class Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         settingsOnCreate();
+        blbosti();
 
 
+    }
+
+    private void blbosti() {
+        
+        //test flipperu
+        final ViewFlipper flipper = (ViewFlipper) findViewById(R.id.flipper);
+
+        TextView tmp = new TextView(Dashboard.this);
+        tmp.setText("jsi");
+        tmp.setTextColor(Color.WHITE);
+
+
+        flipper.addView(tmp,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+
+        tmp = new TextView(Dashboard.this);
+        tmp.setText("pica!");
+        tmp.setTextColor(Color.WHITE);
+
+
+        flipper.addView(tmp,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+
+        flipper.setFlipInterval(1000);
+        flipper.startFlipping();
+
+        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setProgress(1000);
+        ((TextView)findViewById(R.id.seekStatus)).setText("1000");
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                flipper.setFlipInterval(i);
+                flipper.startFlipping();
+                ((TextView) findViewById(R.id.seekStatus)).setText(i + "");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        //test vypis shared preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isLogged = preferences.getBoolean(Constants.IS_LOGGED, false);
 
@@ -50,8 +105,9 @@ public class Dashboard extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_menu_logout:
-                Intent intent= new Intent(Dashboard.this, MainLogin.class);
+                Intent intent = new Intent(Dashboard.this, MainLogin.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                 logout();
                 startActivity(intent);
                 finish();

@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -90,6 +91,7 @@ public class MainLogin extends AppCompatActivity {
         butLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideIME();
                 if (verifyInputs()) {
                     verifyLogin();
                 } else {
@@ -97,6 +99,12 @@ public class MainLogin extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void hideIME() {
+        InputMethodManager inmngr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inmngr.hideSoftInputFromWindow(inputLogin.getWindowToken(), 0);
+        inmngr.hideSoftInputFromWindow(inputPassword.getWindowToken(), 0);
     }
 
     private void verifyLogin() {

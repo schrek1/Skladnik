@@ -12,6 +12,33 @@
 
     <TextView android:id="@+id/txt"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content"/>
+              android:layout_height="wrap_content"
+    />
+
+    <ViewFlipper android:id="@+id/flipper"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+                 android:background="@color/blue"
+    />
+
+    <SeekBar android:id="@+id/seekBar"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_below="@id/flipper"
+             android:paddingLeft="20dp"
+             android:paddingRight="20dp"
+             android:layout_marginTop="30dp"
+             android:max="2000"
+
+    />
+    <TextView android:id="@+id/seekStatus"
+              android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_below="@id/seekBar"/>
+
+    <Chronometer android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+                 android:layout_below="@id/seekStatus"/>
+
 
 </RelativeLayout>

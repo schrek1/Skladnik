@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
@@ -212,6 +213,15 @@ public class RegisterUser extends AppCompatActivity {
 
     private void checkValues(String password, String checkPass, String login) throws SecurityException {
         if (login.isEmpty() || password.isEmpty() || checkPass.isEmpty()) {
+            if (login.isEmpty()) {
+                inputLogin.setError(getString(R.string.fill_all_inputs));
+            }
+            if (password.isEmpty()) {
+                inputPassword.setError(getString(R.string.fill_all_inputs));
+            }
+            if (checkPass.isEmpty()) {
+                inputChckPass.setError(getString(R.string.fill_all_inputs));
+            }
             throw new SecurityException(getString(R.string.fill_all_inputs));
         }
 

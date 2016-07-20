@@ -19,63 +19,76 @@
         <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-            <TextView
-                    android:layout_width="280px"
-                    android:layout_height="wrap_content"
-                    android:text="@string/name"
-                    android:gravity="left"
-                    android:textSize="20sp"
-                    android:textColor="@color/blue"/>
-            <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:hint="login"
-                    android:ems="10"
-                    android:layout_marginLeft="15dp"
-                    android:id="@+id/register_user_et_login"/>
+            <RelativeLayout>
+                <TextView android:id="@+id/register_user_lb_login"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/name"
+                          android:gravity="left"
+                          android:textSize="20sp"
+                          android:textColor="@color/blue"
+                          android:layout_alignParentLeft="true"
+                />
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:hint="login"
+                        android:ems="10"
+                        android:id="@+id/register_user_et_login"
+                        android:layout_below="@id/register_user_lb_login"
+
+                />
+            </RelativeLayout>
         </TableRow>
 
         <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-            <TextView android:layout_height="wrap_content"
-                      android:layout_width="280px"
-                      android:text="@string/password"
-                      android:textSize="20sp"
-                      android:textColor="@color/blue"
-                      android:gravity="left"
-            />
-            <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:ems="10"
-                    android:id="@+id/register_user_et_password"
-                    android:hint="password"
-                    android:layout_marginLeft="15dp"
-            />
+            <RelativeLayout android:layout_marginTop="@dimen/input_group_top_margin">
+                <TextView android:id="@+id/register_user_lb_password"
+                          android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"
+                          android:text="@string/password"
+                          android:textSize="20sp"
+                          android:textColor="@color/blue"
+                          android:layout_alignParentLeft="true"
+                />
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:ems="10"
+                        android:id="@+id/register_user_et_password"
+                        android:hint="password"
+                        android:layout_below="@id/register_user_lb_password"
+                />
+            </RelativeLayout>
         </TableRow>
 
         <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-            <TextView android:layout_height="wrap_content"
-                      android:layout_width="280px"
-                      android:text="@string/pass_check"
-                      android:textSize="20sp"
-                      android:textColor="@color/blue"
-                      android:gravity="left"
-            />
-            <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:ems="10"
-                    android:id="@+id/register_user_et_checkPass"
-                    android:hint="password"
-                    android:layout_marginLeft="15dp"
-            />
+            <RelativeLayout android:layout_marginTop="@dimen/input_group_top_margin">
+                <TextView android:id="@+id/register_user_lb_chckPass"
+                          android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"
+                          android:text="@string/pass_check"
+                          android:textSize="20sp"
+                          android:textColor="@color/blue"
+                          android:layout_alignParentLeft="true"
+                />
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:ems="10"
+                        android:id="@+id/register_user_et_checkPass"
+                        android:hint="password"
+                        android:layout_below="@id/register_user_lb_chckPass"
+                />
+            </RelativeLayout>
         </TableRow>
 
         <TableRow
