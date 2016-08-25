@@ -31,12 +31,12 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void blbosti() {
-        
+
         //test flipperu
         final ViewFlipper flipper = (ViewFlipper) findViewById(R.id.flipper);
 
         TextView tmp = new TextView(Dashboard.this);
-        tmp.setText("jsi");
+        tmp.setText("raz..");
         tmp.setTextColor(Color.WHITE);
 
 
@@ -46,7 +46,7 @@ public class Dashboard extends AppCompatActivity {
         );
 
         tmp = new TextView(Dashboard.this);
-        tmp.setText("pica!");
+        tmp.setText("dva..");
         tmp.setTextColor(Color.WHITE);
 
 
@@ -143,4 +143,6 @@ public class Dashboard extends AppCompatActivity {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 }
+

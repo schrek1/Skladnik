@@ -16,7 +16,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <activity android:name=".view.MainLogin">
+        <activity android:name="cz.schrek.skladnik.view.MainLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -24,10 +24,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.RegisterUser">
+        <activity android:name="cz.schrek.skladnik.view.RegisterUser">
         </activity>
 
-        <activity android:name=".view.Dashboard">
+        <activity android:name="cz.schrek.skladnik.view.Dashboard">
         </activity>
     </application>
 
